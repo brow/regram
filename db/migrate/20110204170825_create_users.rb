@@ -6,6 +6,9 @@ class CreateUsers < ActiveRecord::Migration
       t.string :tumblr_access_token
       t.string :tumblr_access_token_secret
       t.string :tumblr_blog_name
+      t.string :twitter_access_token
+      t.string :twitter_access_token_secret
+      t.string :twitter_name
 
       t.timestamps
     end

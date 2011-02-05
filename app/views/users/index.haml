@@ -9,17 +9,23 @@
     
 
   %div(data-role="content")
-    %ul(data-role="listview" data-theme="g" data-inset="true")
+    %ul(data-role="listview" data-theme="g" data-inset="true" data-split-icon="delete" data-split-theme="g")
       %li
         %img(src="/images/tumblr.png" class="ui-li-icon")
         - if @user.tumblr
           %a(href="#") 
             %strong= @user.tumblr_blog_name + '.tumblr.com'
+            %a{:href => url_for(:action => 'logout_tumblr'), :title => 'remove'}
         - else
           %a{:rel => 'external', :href => url_for(:action => 'login_tumblr')} 
             Add Tumblr
       %li
         %img(src="/images/twitter.png" class="ui-li-icon")
-        %a(href="#") 
-          Add Twitter
+        - if @user.twitter
+          %a(href="#") 
+            %strong= '@' + @user.twitter_name
+          %a{:href => url_for(:action => 'logout_twitter'), :title => 'remove'}
+        - else
+          %a{:rel => 'external', :href => url_for(:action => 'login_twitter')} 
+            Add Twitter
       

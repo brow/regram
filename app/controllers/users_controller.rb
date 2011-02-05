@@ -1,5 +1,6 @@
 require 'instagram'
 require 'tumblr'
+require 'twitter'
 
 class UsersController < ApplicationController  
   
@@ -48,6 +49,14 @@ class UsersController < ApplicationController
     redirect_to request_token.authorize_url
   end
   
+  def logout_tumblr
+    @user.tumblr_access_token = nil
+    @user.tumblr_access_token_secret = nil
+    @user.tumblr_blog_name = nil
+    @user.save
+    redirect_to :action => 'index'
+  end
+  
   def oauth_tumblr
     verifier = params['oauth_verifier']
     request_token = session['tumblr_request_token']
@@ -57,6 +66,41 @@ class UsersController < ApplicationController
         @user.tumblr_access_token = access_token.token
         @user.tumblr_access_token_secret = access_token.secret
         @user.tumblr_blog_name = @user.tumblr_blog_names[0]
+        @user.save
+      rescue OAuth::Error => e
+        # populate error flash?
+      end
+      redirect_to :action => 'index'
+    else
+      render :text => "No request token"
+    end
+  end
+  
+  # Twitter
+  
+  def login_twitter
+    request_token = Twitter.oauth_consumer.get_request_token(:oauth_callback => url_for(:action => 'oauth_twitter'))
+    session['twitter_request_token'] = request_token
+    redirect_to request_token.authorize_url
+  end
+  
+  def logout_twitter
+    @user.twitter_access_token = nil
+    @user.twitter_access_token_secret = nil
+    @user.twitter_name = nil
+    @user.save
+    redirect_to :action => 'index'
+  end
+  
+  def oauth_twitter
+    verifier = params['oauth_verifier']
+    request_token = session['twitter_request_token']
+    if request_token and verifier
+      begin
+        access_token = request_token.get_access_token(:oauth_verifier => verifier)
+        @user.twitter_access_token = access_token.token
+        @user.twitter_access_token_secret = access_token.secret
+        @user.twitter_name = @user.twitter_screen_name
         @user.save
       rescue OAuth::Error => e
         # populate error flash?
