@@ -3,7 +3,7 @@ require 'tumblr'
 
 class UsersController < ApplicationController  
   
-  before_filter :login_required, :except => [:login, :oauth]
+  before_filter :login_required, :except => [:login, :authorize, :oauth]
   
   def index
     respond_to do |format|
@@ -12,7 +12,7 @@ class UsersController < ApplicationController
   end
   
   def login
-    @authorization_url = Instagram.authorization_url
+    @authorize_url = Instagram.authorization_url
     respond_to do |format|
       format.html
     end

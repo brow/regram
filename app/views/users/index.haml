@@ -1,29 +1,21 @@
-#header
-  %img(src='/images/header.png')
+%div(data-role="page")
+  %div(data-role="header")
+    %a{ :href => url_for(:action => 'logout'), 
+        'data-role' => 'button', 
+        'data-icon' => 'arrow-l',
+        'data-direction' => 'reverse'}
+      Log Out
+    %h1 Regram
+    
 
-#services
-  %table
-    %tr
-      %td.icon
-        %img(src='/images/tumblr.png')
-      %td.status
-        - if @user.tumblr
-          %select(name='tumblr_blog_name')
-            - for blog_name in @user.tumblr_blog_names
-              %option{:selected => blog_name == @user.tumblr_blog_name}
-                = blog_name + '.tumblr.com'
-        - else
-          %a{:href => url_for(:action => 'login_tumblr')} 
-            Add Tumblr Account
-    / %tr
-    /   %td.icon
-    /     %img(src='/images/twitter.png')
-    /   %td.status
-    /     %a
-    /       Add Twitter Account
+  %div(data-role="content")
+    %div(data-role="controlgroup")
+      - if @user.tumblr
+        %a(href="#" data-role="button") 
+          = @user.tumblr_blog_name + '.tumblr.com'
+      - else
+        %a{:rel => 'external', :href => url_for(:action => 'login_tumblr'), 'data-role' => 'button'} 
+          Enable Tumblr
+      %a(href="#" data-role="button") 
+        Enable Twitter
       
-#logout
-  %a{:href => url_for(:action => 'logout')} 
-    log out
-
-
