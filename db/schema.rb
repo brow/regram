@@ -25,6 +25,8 @@ ActiveRecord::Schema.define(:version => 20110204173036) do
   create_table "users", :force => true do |t|
     t.string   "instagram_id"
     t.string   "instagram_access_token"
+    t.string   "tumblr_access_token"
+    t.string   "tumblr_access_token_secret"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -1,3 +1,23 @@
-%p logged in!
-%a{:href => url_for(:action => 'logout')} 
-  log out
+#header
+  %img(src='/images/header.png')
+
+#services
+  %table
+    %tr
+      %td.icon
+        %img(src='/images/tumblr.png')
+      %td.status
+        %a{:href => url_for(:action => 'login_tumblr')} 
+          Add Tumblr Account
+    %tr
+      %td.icon
+        %img(src='/images/twitter.png')
+      %td.status
+        %a
+          Add Twitter Account
+      
+#logout
+  %a{:href => url_for(:action => 'logout')} 
+    log out
+
+

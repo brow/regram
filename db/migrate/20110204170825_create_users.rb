@@ -3,6 +3,8 @@ class CreateUsers < ActiveRecord::Migration
     create_table :users do |t|
       t.string :instagram_id
       t.string :instagram_access_token
+      t.string :tumblr_access_token
+      t.string :tumblr_access_token_secret
 
       t.timestamps
     end
