@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(:version => 20110204173036) do
     t.string   "instagram_access_token"
     t.string   "tumblr_access_token"
     t.string   "tumblr_access_token_secret"
+    t.string   "tumblr_blog_name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

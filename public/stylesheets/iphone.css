@@ -32,6 +32,8 @@ body {
   margin: 4px 10px; }
 #services table td.status {
   vertical-align: middle; }
+  #services table td.status select {
+    max-width: 180px; }
 
 #logout {
   text-align: center; }

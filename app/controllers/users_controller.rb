@@ -53,6 +53,7 @@ class UsersController < ApplicationController
         access_token = request_token.get_access_token(:oauth_verifier => verifier)
         @user.tumblr_access_token = access_token.token
         @user.tumblr_access_token_secret = access_token.secret
+        @user.tumblr_blog_name = @user.tumblr_blog_names[0]
         @user.save
       rescue OAuth::Error => e
         # populate error flash?
