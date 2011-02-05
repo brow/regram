@@ -5,5 +5,5 @@
       Regram can repost any photo on Instagram to your Tumblr, 
       Twitter, or Facebook. All you need to do is type 
       %strong "@regram".
-    %a{:rel => 'external', :href => "#{@authorize_url}", 'data-role'=> 'button'}
+    %a{:rel => 'external', :href => url_for(:action => 'authorize'), 'data-role'=> 'button'}
       Get Started

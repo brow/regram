@@ -3,5 +3,9 @@ img.logo {
   height: 72px;
   margin: 0 0 0 -15px; }
 
+img.ui-li-icon {
+  width: 16px;
+  height: 16px; }
+
 p.center {
   text-align: center; }

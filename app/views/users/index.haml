@@ -9,13 +9,17 @@
     
 
   %div(data-role="content")
-    %div(data-role="controlgroup")
-      - if @user.tumblr
-        %a(href="#" data-role="button") 
-          = @user.tumblr_blog_name + '.tumblr.com'
-      - else
-        %a{:rel => 'external', :href => url_for(:action => 'login_tumblr'), 'data-role' => 'button'} 
-          Enable Tumblr
-      %a(href="#" data-role="button") 
-        Enable Twitter
+    %ul(data-role="listview" data-theme="g" data-inset="true")
+      %li
+        %img(src="/images/tumblr.png" class="ui-li-icon")
+        - if @user.tumblr
+          %a(href="#") 
+            %strong= @user.tumblr_blog_name + '.tumblr.com'
+        - else
+          %a{:rel => 'external', :href => url_for(:action => 'login_tumblr')} 
+            Add Tumblr
+      %li
+        %img(src="/images/twitter.png" class="ui-li-icon")
+        %a(href="#") 
+          Add Twitter
       

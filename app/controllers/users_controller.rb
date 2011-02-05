@@ -12,10 +12,13 @@ class UsersController < ApplicationController
   end
   
   def login
-    @authorize_url = Instagram.authorization_url
     respond_to do |format|
       format.html
     end
+  end
+  
+  def authorize 
+    redirect_to Instagram.authorization_url
   end
   
   def logout
