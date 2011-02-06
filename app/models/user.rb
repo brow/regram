@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   # Tumblr
   
   def tumblr?
-    tumblr_access_token and tumblr_access_token_secret and tumblr_blog_name
+    tumblr_access_token and tumblr_access_token_secret
   end
   
   def tumblr
