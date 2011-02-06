@@ -110,6 +110,7 @@ DEPENDENCIES
   mysql
   oauth
   rails (= 3.0.3)
+  redis
   resque
   resque-scheduler
   ruby-debug

@@ -1,5 +1,5 @@
 require 'instagram_private'
-require 'resque'
+require 'redis'
 
 USERNAME = 'regram'
 PASSWORD = 'cra4zycr4zy'
@@ -13,22 +13,43 @@ class InstagramAPIJob
 end
 
 class ReadCommentsJob < InstagramAPIJob
-  @queue = :instagram
+  @queue = :read_comment
+  
+  LAST_CREATED_AT_KEY = 'regram:last_created_at'
+  LAST_USER_IDS_KEY = 'regram:last_user_ids'
+  
   def self.perform
     response = @@api.activity
     response.fail!
     return unless items = response['items']
     
-    #TODO: ignore duplicate updates
+    redis = Redis.new
     
-    for update in items[0]['updates'].select{|u| u['content_type'] == 'comment'}
-      Resque.enqueue(ProcessCommentJob, update)
+    # Filter out comments we've already seen
+    last_created_at = redis.get(LAST_CREATED_AT_KEY).to_i
+    last_user_ids = Set.new(JSON.parse(redis.get(LAST_USER_IDS_KEY) || "[]"))
+    comments = items[0]['updates'].select{|u| u['content_type'] == 'comment'}
+    new_comments = comments.select do |comment|
+       comment['created_at'] > last_created_at || !last_user_ids.include?(comment['user']['pk'])
+    end
+    
+    # Record which new comments we saw this time
+    unless new_comments.empty?
+      last_created_at = comments.map{|c| c['created_at']}.max
+      last_user_ids = comments.select{|c| c['created_at'] == last_created_at}.map{|c| c['user']['pk']}
+      redis.set(LAST_CREATED_AT_KEY, last_created_at)
+      redis.set(LAST_USER_IDS_KEY, last_user_ids.to_json)
+    end
+    
+    # Process new comments
+    for comment in new_comments
+      Resque.enqueue(ProcessCommentJob, comment)
     end
   end
 end
 
 class ProcessCommentJob < InstagramAPIJob
-  @queue = :instagram
+  @queue = :process_comment
   
   def self.perform(update)
     # Parse relevant fields
@@ -53,7 +74,7 @@ class ProcessCommentJob < InstagramAPIJob
 end
 
 class WriteTumblrJob 
-  @queue = :tumblr
+  @queue = :write_tumblr
   def self.perform(user_id, image_url, caption, via_name, permalink)
     return unless user = User.find_by_id(user_id)
     text = "#{caption} (via <a href='#{permalink}'>#{via_name}</a>)"
@@ -69,7 +90,7 @@ class WriteTumblrJob
 end
 
 class WriteTwitterJob 
-  @queue = :twitter
+  @queue = :write_twitter
   def self.perform(user_id, caption, via_name, permalink)
     return unless user = User.find_by_id(user_id)
     text_helper = Object.new.extend(ActionView::Helpers::TextHelper)
