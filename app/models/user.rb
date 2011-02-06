@@ -4,8 +4,12 @@ require 'twitter'
 class User < ActiveRecord::Base
   # Tumblr
   
+  def tumblr?
+    tumblr_access_token and tumblr_access_token_secret and tumblr_blog_name
+  end
+  
   def tumblr
-    return nil unless tumblr_access_token and tumblr_access_token_secret
+    return nil unless tumblr?
     OAuth::AccessToken.new(Tumblr.oauth_consumer, 
                           tumblr_access_token, 
                           tumblr_access_token_secret)
@@ -22,8 +26,12 @@ class User < ActiveRecord::Base
   
   # Twitter
   
+  def twitter?
+    twitter_access_token and twitter_access_token_secret
+  end
+  
   def twitter
-    return nil unless twitter_access_token and twitter_access_token_secret
+    return nil unless twitter?
     OAuth::AccessToken.new(Twitter.oauth_consumer, 
                           twitter_access_token, 
                           twitter_access_token_secret)

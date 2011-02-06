@@ -1,31 +1,39 @@
 %div(data-role="page")
-  %div(data-role="header")
-    %a{ :href => url_for(:action => 'logout'), 
-        'data-role' => 'button', 
-        'data-icon' => 'arrow-l',
-        'data-direction' => 'reverse'}
-      Log Out
-    %h1 Regram
-    
-
   %div(data-role="content")
+  
+    %img(class="logo" src="/images/header.png")
+    
+    %div.instructions
+      Comment 
+      %strong @regram 
+      on any Instagram photo (optionally followed by a caption) 
+      to repost it to the accounts below. 
     %ul(data-role="listview" data-theme="g" data-inset="true" data-split-icon="delete" data-split-theme="g")
       %li
         %img(src="/images/tumblr.png" class="ui-li-icon")
-        - if @user.tumblr
+        - if @user.tumblr?
           %a(href="#") 
             %strong= @user.tumblr_blog_name + '.tumblr.com'
-            %a{:href => url_for(:action => 'logout_tumblr'), :title => 'remove'}
+            %a{ :href => url_for(:action => 'logout_tumblr'), 
+                :title => 'remove',
+                'data-transition' => 'fade' }
         - else
           %a{:rel => 'external', :href => url_for(:action => 'login_tumblr')} 
             Add Tumblr
       %li
         %img(src="/images/twitter.png" class="ui-li-icon")
-        - if @user.twitter
+        - if @user.twitter?
           %a(href="#") 
             %strong= '@' + @user.twitter_name
-          %a{:href => url_for(:action => 'logout_twitter'), :title => 'remove'}
+          %a{ :href => url_for(:action => 'logout_twitter'), 
+              :title => 'remove',
+              'data-transition' => 'fade'}
         - else
           %a{:rel => 'external', :href => url_for(:action => 'login_twitter')} 
             Add Twitter
+            
+    %a{ :href => url_for(:action => 'logout'), 
+        'data-role' => 'button', 
+        'data-direction' => 'reverse' }
+      Log Out
       
