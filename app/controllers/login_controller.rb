@@ -1,3 +1,5 @@
+require 'instagram'
+
 class LoginController < ApplicationController  
   
   def index

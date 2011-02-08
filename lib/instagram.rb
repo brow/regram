@@ -4,19 +4,22 @@ class Instagram
   include HTTParty
   base_uri 'https://api.instagram.com'
   
-  CLIENT_ID = '1ced2a0708aa48b1ba01c882e4f627aa'
-  CLIENT_SECRET = 'f5c73f993917481796ab089a3b8212dd'
-  REDIRECT_URI = 'http://localhost:3000/login/callback'
+  CLIENT_ID = APP_CONFIG['instagram_client_id']
+  CLIENT_SECRET = APP_CONFIG['instagram_client_secret']
+  CALLBACK_URI = APP_CONFIG['instagram_callback_uri']
 
   def self.authorization_url
-    "https://api.instagram.com/oauth/authorize/?client_id=#{CLIENT_ID}&redirect_uri=#{REDIRECT_URI}&response_type=code"
+    "https://api.instagram.com/oauth/authorize/" +
+       "?client_id=#{CLIENT_ID}" +
+       "&redirect_uri=#{CALLBACK_URI}" +
+       "&response_type=code"
   end
 
   def self.get_user_and_access_token(code)
     response = self.post('/oauth/access_token', :body => {
       :client_id => CLIENT_ID,
       :client_secret => CLIENT_SECRET,
-      :redirect_uri => REDIRECT_URI,
+      :redirect_uri => CALLBACK_URI,
       :grant_type => 'authorization_code',
       :code => code
     })
