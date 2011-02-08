@@ -13,3 +13,6 @@ p.center {
 .instructions {
   text-align: center;
   padding: 15px 0 10px; }
+
+a.add {
+  font-weight: normal; }

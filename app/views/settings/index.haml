@@ -8,17 +8,23 @@
       %strong @regram 
       on any Instagram photo (optionally followed by a caption) 
       to repost it to the accounts below. 
-    %ul(data-role="listview" data-theme="g" data-inset="true" data-split-icon="delete" data-split-theme="g")
+      
+    / Hack to prevent automatic focusing on first element of list below
+    %a(href="#" style="display:none")
+      
+    %ul(data-role="listview" data-split-icon="delete" data-split-theme="g" data-inset="true")
       %li
         %img(src="/images/tumblr.png" class="ui-li-icon")
         - if @user.tumblr?
-          %a(href="#") 
-            %strong= @user.tumblr_blog_name + '.tumblr.com'
-            %a{ :href => url_for(:controller => 'tumblr', :action => 'logout'), 
-                :title => 'remove',
-                'data-transition' => 'fade' }
+          %a{ :href => url_for(:controller => 'tumblr') } 
+            = @user.tumblr_blog_name + '.tumblr.com'
+          %a{ :href => url_for(:controller => 'tumblr', :action => 'logout'), 
+              :title => 'remove',
+              'data-transition' => 'fade' }
         - else
-          %a{:rel => 'external', :href => url_for(:controller => 'tumblr', :action => 'authorize')} 
+          %a{ :rel => 'external', 
+              :href => url_for(:controller => 'tumblr', :action => 'authorize'),
+              :class => 'add' } 
             Add Tumblr
       %li
         %img(src="/images/twitter.png" class="ui-li-icon")
@@ -29,7 +35,9 @@
               :title => 'remove',
               'data-transition' => 'fade'}
         - else
-          %a{:rel => 'external', :href => url_for(:controller => 'twitter', :action => 'authorize')} 
+          %a{ :rel => 'external', 
+              :href => url_for(:controller => 'twitter', :action => 'authorize'),
+              :class => 'add' } 
             Add Twitter
             
     %a{ :href => url_for(:controller => 'login'), 
