@@ -6,7 +6,7 @@ class Instagram
   
   CLIENT_ID = '1ced2a0708aa48b1ba01c882e4f627aa'
   CLIENT_SECRET = 'f5c73f993917481796ab089a3b8212dd'
-  REDIRECT_URI = 'http://localhost:3000/users/oauth'
+  REDIRECT_URI = 'http://localhost:3000/login/callback'
 
   def self.authorization_url
     "https://api.instagram.com/oauth/authorize/?client_id=#{CLIENT_ID}&redirect_uri=#{REDIRECT_URI}&response_type=code"

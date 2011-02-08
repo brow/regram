@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   
   def login_required
     unless session['user_id'] and @user = User.find_by_id(session['user_id'])
-      redirect_to :action => 'login'
+      redirect_to :controller => 'login'
     end
   end
 end

@@ -14,25 +14,25 @@
         - if @user.tumblr?
           %a(href="#") 
             %strong= @user.tumblr_blog_name + '.tumblr.com'
-            %a{ :href => url_for(:action => 'logout_tumblr'), 
+            %a{ :href => url_for(:controller => 'tumblr', :action => 'logout'), 
                 :title => 'remove',
                 'data-transition' => 'fade' }
         - else
-          %a{:rel => 'external', :href => url_for(:action => 'login_tumblr')} 
+          %a{:rel => 'external', :href => url_for(:controller => 'tumblr', :action => 'authorize')} 
             Add Tumblr
       %li
         %img(src="/images/twitter.png" class="ui-li-icon")
         - if @user.twitter?
           %a(href="#") 
             %strong= '@' + @user.twitter_name
-          %a{ :href => url_for(:action => 'logout_twitter'), 
+          %a{ :href => url_for(:controller => 'twitter', :action => 'logout'), 
               :title => 'remove',
               'data-transition' => 'fade'}
         - else
-          %a{:rel => 'external', :href => url_for(:action => 'login_twitter')} 
+          %a{:rel => 'external', :href => url_for(:controller => 'twitter', :action => 'authorize')} 
             Add Twitter
             
-    %a{ :href => url_for(:action => 'logout'), 
+    %a{ :href => url_for(:controller => 'login'), 
         'data-role' => 'button', 
         'data-direction' => 'reverse' }
       Log Out
