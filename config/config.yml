@@ -3,22 +3,22 @@ development:
     instagram_client_secret: fac505457d2e4d9d8341c6f5bc653503
     instagram_callback_uri: http://localhost:3000/login/callback
     
-    twitter_consumer_key: j1TSYm9UPjbAt5d3xGPkVA
-    twitter_consumer_secret: 8kQ2eFNMKAAtb7TVD1orjOo2fATSlfcsYDRMmpCQEs
+    twitter_consumer_key: KOBe2v2vcBQHpNXbfy3NVw
+    twitter_consumer_secret: XSTyEzZ0AXs6aJhn0haWUgNwHXdFFC1iz7Xak0dM
     
-    tumblr_consumer_key: RqzEQ6OKxWEQcRjeC9KxWJ6HjQTI1WxoayHyOJ2JxWiXy4yXhQ
-    tumblr_consumer_secret: tiEgII1RYiWgLsCU9TJdcTw8oKcd42iWhcdaUXgCIrRZ8pZAMG
+    tumblr_consumer_key: 7YM2R3NHACiKLiXWsVvLEa60m5AqT9WxnOVcBTYdMYywkPplC7
+    tumblr_consumer_secret: zq7DcmFGhQvjOAHYNWkKeJwwEgeb894eS9ykBxyPU8u2SIYLuE
     
 test:
     instagram_client_id: a4806b531031499dbdfa29883c44546e
     instagram_client_secret: fac505457d2e4d9d8341c6f5bc653503
     instagram_callback_uri: http://localhost:3000/login/callback
     
-    twitter_consumer_key: j1TSYm9UPjbAt5d3xGPkVA
-    twitter_consumer_secret: 8kQ2eFNMKAAtb7TVD1orjOo2fATSlfcsYDRMmpCQEs
+    twitter_consumer_key: KOBe2v2vcBQHpNXbfy3NVw
+    twitter_consumer_secret: XSTyEzZ0AXs6aJhn0haWUgNwHXdFFC1iz7Xak0dM
     
-    tumblr_consumer_key: RqzEQ6OKxWEQcRjeC9KxWJ6HjQTI1WxoayHyOJ2JxWiXy4yXhQ
-    tumblr_consumer_secret: tiEgII1RYiWgLsCU9TJdcTw8oKcd42iWhcdaUXgCIrRZ8pZAMG
+    tumblr_consumer_key: 7YM2R3NHACiKLiXWsVvLEa60m5AqT9WxnOVcBTYdMYywkPplC7
+    tumblr_consumer_secret: zq7DcmFGhQvjOAHYNWkKeJwwEgeb894eS9ykBxyPU8u2SIYLuE
 
 production:
     instagram_client_id: 1ced2a0708aa48b1ba01c882e4f627aa
