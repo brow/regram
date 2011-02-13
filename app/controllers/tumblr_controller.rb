@@ -4,6 +4,17 @@ class TumblrController < ApplicationController
   
   before_filter :login_required
   
+  def index
+    respond_to do |format|
+      format.html
+    end
+  end
+  
+  def update
+    @user.update_attributes(params['user'])
+    redirect_to :controller => 'settings'
+  end
+  
   def authorize
     request_token = Tumblr.oauth_consumer.get_request_token
     session['tumblr_request_token'] = request_token
