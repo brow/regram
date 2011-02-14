@@ -105,3 +105,15 @@ class WriteTwitterJob
     }).value
   end
 end
+
+class ScheduleMinuteJob
+  @queue = :schedule_minute
+  
+  def self.perform
+    # This job is run each minute and can enqueue multiple delayed jobs to get
+    # around the one-minute frequency limit of cron and resque_scheduler
+    (10..60).step(10) do |n|
+      Resque.enqueue_in(n.seconds, ReadCommentsJob)
+    end
+  end
+end
