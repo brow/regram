@@ -10,6 +10,12 @@ COOKIES = [ "sessionid=972b30d80389397a46386e011e51e33e",
 
 class InstagramAPIJob
   @@api = Instagram.new(USERNAME, PASSWORD, UDID, COOKIES)
+  @@log = Logger.new("#{::Rails.root.to_s}/log/instagram.log")
+  @@log.level = Logger::INFO
+  @@log.formatter = proc do |severity, datetime, progname, msg|
+    date_string = datetime.strftime('%Y-%m-%d %H:%M:%S')
+    "#{date_string}: #{msg}\n"
+  end
 end
 
 class ReadCommentsJob < InstagramAPIJob
@@ -22,16 +28,22 @@ class ReadCommentsJob < InstagramAPIJob
     response = @@api.activity
     response.fail!
     return unless items = response['items']
-    
+        
     redis = Redis.new
     
     # Filter out comments we've already seen
-    last_created_at = redis.get(LAST_CREATED_AT_KEY).to_i
-    last_user_ids = Set.new(JSON.parse(redis.get(LAST_USER_IDS_KEY) || "[]"))
-    comments = items[0]['updates'].select{|u| u['content_type'] == 'comment'}
-    new_comments = comments.select do |comment|
-       comment['created_at'] > last_created_at || !last_user_ids.include?(comment['user']['pk'])
+    if items.empty?
+      new_comments = []
+    else
+      last_created_at = redis.get(LAST_CREATED_AT_KEY).to_i
+      last_user_ids = Set.new(JSON.parse(redis.get(LAST_USER_IDS_KEY) || "[]"))
+      comments = items[0]['updates'].select{|u| u['content_type'] == 'comment'}
+      new_comments = comments.select do |comment|
+         comment['created_at'] > last_created_at || !last_user_ids.include?(comment['user']['pk'])
+      end
     end
+    
+    @@log.info("#{new_comments.length} new comments")
     
     # Record which new comments we saw this time
     unless new_comments.empty?
