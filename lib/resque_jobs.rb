@@ -20,7 +20,7 @@ end
 
 class ReadCommentsJob < Job
   @@api = InstagramPrivate.new(USERNAME, PASSWORD, UDID, COOKIES)
-  @queue = :read_comment
+  @queue = :high
   
   LAST_CREATED_AT_KEY = 'regram:last_created_at'
   LAST_USER_IDS_KEY = 'regram:last_user_ids'
@@ -63,7 +63,7 @@ class ReadCommentsJob < Job
 end
 
 class ProcessCommentJob < Job
-  @queue = :process_comment
+  @queue = :medium
   
   def self.perform(update)
     # Parse relevant fields
@@ -88,7 +88,7 @@ class ProcessCommentJob < Job
 end
 
 class WriteTumblrJob < Job
-  @queue = :write_tumblr
+  @queue = :low
   
   def self.perform(user_id, image_url, caption, via_name, permalink)
     return unless user = User.find_by_id(user_id)
@@ -107,7 +107,7 @@ class WriteTumblrJob < Job
 end
 
 class WriteTwitterJob < Job
-  @queue = :write_twitter
+  @queue = :low
   
   def self.perform(user_id, image_url, caption, via_name, permalink)
     return unless user = User.find_by_id(user_id)
@@ -131,7 +131,7 @@ class WriteTwitterJob < Job
 end
 
 class ScheduleMinuteJob
-  @queue = :schedule_minute
+  @queue = :high
   
   def self.perform
     # This job is run each minute and can enqueue multiple delayed jobs to get
