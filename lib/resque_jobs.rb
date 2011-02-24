@@ -1,4 +1,5 @@
 require 'instagram_private'
+require 'instagram'
 require 'redis'
 
 USERNAME = 'regram'
@@ -8,8 +9,7 @@ COOKIES = [ "sessionid=972b30d80389397a46386e011e51e33e",
             "ds_user=regram", 
             "ds_user_id=1248004"]
 
-class InstagramAPIJob
-  @@api = Instagram.new(USERNAME, PASSWORD, UDID, COOKIES)
+class Job
   @@log = Logger.new("#{::Rails.root.to_s}/log/instagram.log")
   @@log.level = Logger::INFO
   @@log.formatter = proc do |severity, datetime, progname, msg|
@@ -18,7 +18,8 @@ class InstagramAPIJob
   end
 end
 
-class ReadCommentsJob < InstagramAPIJob
+class ReadCommentsJob < Job
+  @@api = InstagramPrivate.new(USERNAME, PASSWORD, UDID, COOKIES)
   @queue = :read_comment
   
   LAST_CREATED_AT_KEY = 'regram:last_created_at'
@@ -39,12 +40,13 @@ class ReadCommentsJob < InstagramAPIJob
       last_user_ids = Set.new(JSON.parse(redis.get(LAST_USER_IDS_KEY) || "[]"))
       comments = items[0]['updates'].select{|u| u['content_type'] == 'comment'}
       new_comments = comments.select do |comment|
-         comment['created_at'] > last_created_at || !last_user_ids.include?(comment['user']['pk'])
+        comment['created_at'] > last_created_at ||
+        (comment['created_at'] == last_created_at && !last_user_ids.include?(comment['user']['pk']))
       end
     end
     
     @@log.info("#{new_comments.length} new comments")
-    
+        
     # Record which new comments we saw this time
     unless new_comments.empty?
       last_created_at = comments.map{|c| c['created_at']}.max
@@ -60,13 +62,13 @@ class ReadCommentsJob < InstagramAPIJob
   end
 end
 
-class ProcessCommentJob < InstagramAPIJob
+class ProcessCommentJob < Job
   @queue = :process_comment
   
   def self.perform(update)
     # Parse relevant fields
     instagram_user_id = update['user']['pk']
-    caption = (match = update['text'].match('@regram (.*)')) ? match[1] : nil
+    caption = (match = update['text'].match('@regram (.*)')) ? match[1] : ''
     via_name = update['media']['user']['username']
     media_id = update['media']['pk']
     media_img_url = update['media']['image_versions'].sort_by{|v| -v['width']}[0]['url']
@@ -76,45 +78,55 @@ class ProcessCommentJob < InstagramAPIJob
     return unless user.tumblr? or user.twitter?
     
     # Get permalink
-    response = @@api.permalink(media_id)
+    response = Instagram.media(media_id)
     response.fail!
-    permalink = response['permalink']
+    permalink = response['data']['link']
     
     Resque.enqueue(WriteTumblrJob, user.id, media_img_url, caption, via_name, permalink) if user.tumblr?
-    Resque.enqueue(WriteTwitterJob, user.id, caption, via_name, permalink) if user.twitter?
+    Resque.enqueue(WriteTwitterJob, user.id, media_img_url, caption, via_name, permalink) if user.twitter?
   end
 end
 
-class WriteTumblrJob 
+class WriteTumblrJob < Job
   @queue = :write_tumblr
+  
   def self.perform(user_id, image_url, caption, via_name, permalink)
     return unless user = User.find_by_id(user_id)
-    text = "#{caption} (via <a href='#{permalink}'>#{via_name}</a>)"
+    media_link = permalink || image_url
+    text = "#{caption} (via <a href='#{media_link}'>#{via_name}</a>)"
     user.tumblr.post('/api/write', {
       :type => 'photo',
       :source => image_url,
       :caption => text,
-      'click-through-url' => permalink,
+      'click-through-url' => media_link,
       :generator => 'regram',
       :group => user.tumblr_blog_name + '.tumblr.com'
     }).value
+    @@log.info("posted to #{user.tumblr_blog_name}.tumblr.com")
   end
 end
 
-class WriteTwitterJob 
+class WriteTwitterJob < Job
   @queue = :write_twitter
-  def self.perform(user_id, caption, via_name, permalink)
+  
+  def self.perform(user_id, image_url, caption, via_name, permalink)
     return unless user = User.find_by_id(user_id)
-    text_helper = Object.new.extend(ActionView::Helpers::TextHelper)
-    attr_and_link = " #{permalink}"
-    truncated_caption = text_helper.truncate(caption, {
-      :length => 140 - attr_and_link.length, 
-      :omission => '…',
-      :separator => ' '
-    })
+    media_link = permalink || image_url
+    if caption.empty?
+      status = media_link
+    else
+      text_helper = Object.new.extend(ActionView::Helpers::TextHelper)
+      truncated_caption = text_helper.truncate(caption, {
+        :length => 140 - (media_link.length + 1), 
+        :omission => '…',
+        :separator => ' '
+      })
+      status = "#{truncated_caption} #{media_link}"
+    end
     user.twitter.post('/1/statuses/update.xml', {
-      :status => truncated_caption + attr_and_link
+      :status => status
     }).value
+     @@log.info("posted to @#{user.twitter_name}")
   end
 end
 

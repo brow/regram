@@ -25,4 +25,8 @@ class Instagram
     })
     return [response['user'], response['access_token']]
   end
+  
+  def self.media(media_id)
+    self.get("/v1/media/#{media_id}?client_id=#{CLIENT_ID}")
+  end
 end

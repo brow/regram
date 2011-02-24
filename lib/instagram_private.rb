@@ -7,7 +7,7 @@ class HTTParty::Response
   end
 end
 
-class Instagram
+class InstagramPrivate
   include HTTParty
   base_uri "instagr.am/api/v1"
   
@@ -25,7 +25,7 @@ class Instagram
   
   def headers
     {
-      'User-Agent' => 'Instagram 1.8.10 (iPhone; iPhone OS 4.1; en_US)', 
+      'User-Agent' => 'Instagram 1.12.1 (iPhone; iPhone OS 4.1; en_US)', 
       'Cookie' => @cookies.join('; ')
     }
   end
