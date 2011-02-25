@@ -14,5 +14,10 @@ p.center {
   text-align: center;
   padding: 15px 0 10px; }
 
+.contact {
+  text-align: center;
+  font-size: 12px;
+  padding: 18px; }
+
 a.add {
   font-weight: normal; }
