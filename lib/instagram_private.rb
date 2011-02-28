@@ -10,7 +10,7 @@ end
 
 class InstagramPrivate
   include HTTParty
-  base_uri "instagr.am/api/v1"
+  base_uri "instagram.com/api/v1"
   
   attr_reader :cookies
   
