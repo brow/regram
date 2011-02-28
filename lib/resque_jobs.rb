@@ -1,6 +1,7 @@
 require 'instagram_private'
 require 'instagram'
 require 'redis'
+require 'facebook'
 
 USERNAME = 'regram'
 PASSWORD = 'cra4zycr4zy'
@@ -36,19 +37,22 @@ class ReadCommentsJob < Job
     if items.empty?
       new_comments = []
     else
-      last_created_at = redis.get(LAST_CREATED_AT_KEY).to_i
-      last_user_ids = Set.new(JSON.parse(redis.get(LAST_USER_IDS_KEY) || "[]"))
       comments = items[0]['updates'].select{|u| u['content_type'] == 'comment'}
-      new_comments = comments.select do |comment|
-        comment['created_at'] > last_created_at ||
-        (comment['created_at'] == last_created_at && !last_user_ids.include?(comment['user']['pk']))
+      if last_created_at = redis.get(LAST_CREATED_AT_KEY)
+        last_user_ids = Set.new(JSON.parse(redis.get(LAST_USER_IDS_KEY) || "[]"))
+        new_comments = comments.select do |comment|
+          comment['created_at'] > last_created_at.to_i ||
+          (comment['created_at'] == last_created_at.to_i && !last_user_ids.include?(comment['user']['pk']))
+        end
+      else
+        new_comments = []
       end
     end
     
     @@log.info("#{new_comments.length} new comments")
         
     # Record which new comments we saw this time
-    unless new_comments.empty?
+    unless comments.empty?
       last_created_at = comments.map{|c| c['created_at']}.max
       last_user_ids = comments.select{|c| c['created_at'] == last_created_at}.map{|c| c['user']['pk']}
       redis.set(LAST_CREATED_AT_KEY, last_created_at)
@@ -75,7 +79,7 @@ class ProcessCommentJob < Job
     
     # See if we actually need to do anything with this comment
     return unless user = User.find_by_instagram_id(instagram_user_id)
-    return unless user.tumblr? or user.twitter?
+    return unless user.tumblr? or user.twitter? or user.facebook?
     
     # Get permalink
     response = Instagram.media(media_id)
@@ -84,6 +88,7 @@ class ProcessCommentJob < Job
     
     Resque.enqueue(WriteTumblrJob, user.id, media_img_url, caption, via_name, permalink) if user.tumblr?
     Resque.enqueue(WriteTwitterJob, user.id, media_img_url, caption, via_name, permalink) if user.twitter?
+    Resque.enqueue(WriteFacebookJob, user.id, media_img_url, caption, via_name, permalink) if user.facebook?
   end
 end
 
@@ -126,7 +131,25 @@ class WriteTwitterJob < Job
     user.twitter.post('/1/statuses/update.xml', {
       :status => status
     }).value
-     @@log.info("posted to @#{user.twitter_name}")
+    @@log.info("posted to @#{user.twitter_name}")
+  end
+end
+
+class WriteFacebookJob < Job
+  @queue = :low
+  
+  def self.perform(user_id, image_url, caption, via_name, permalink)
+    return unless user = User.find_by_id(user_id)
+    media_link = permalink || image_url
+
+    Facebook.post('/me/feed', :body => {
+      :access_token => user.facebook_access_token,
+      :message => caption,
+      :link => media_link,
+      :picture => image_url,
+      :name => "#{via_name}'s photo"
+    }).value
+    @@log.info("posted to #{user.facebook_name}")
   end
 end
 

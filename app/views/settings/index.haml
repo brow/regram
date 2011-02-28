@@ -41,7 +41,20 @@
               :href => url_for(:controller => 'twitter', :action => 'authorize'),
               :class => 'add' } 
             Add Twitter
-            
+      %li
+        %img(src="/images/facebook.png" class="ui-li-icon")
+        - if @user.facebook?
+          %a(href="#") 
+            %strong= @user.facebook_name
+          %a{ :href => url_for(:controller => 'facebook', :action => 'logout'), 
+              :title => 'remove',
+              'data-transition' => 'fade'}
+        - else
+          %a{ :rel => 'external', 
+              :href => url_for(:controller => 'facebook', :action => 'authorize'),
+              :class => 'add' } 
+            Add Facebook
+           
     %a{ :href => url_for(:controller => 'login'), 
         'data-role' => 'button', 
         'data-direction' => 'reverse' }

@@ -44,4 +44,18 @@ class User < ActiveRecord::Base
     end
     @twitter_screen_name
   end
+  
+  # Facebook
+  
+  def facebook?
+    facebook_access_token
+  end
+  
+  def facebook_full_name
+    unless @facebook_full_name
+      response = Facebook.get('/me', :query => {:access_token => facebook_access_token})
+      @facebook_full_name = response['name']
+    end
+    return @facebook_full_name
+  end
 end

@@ -9,6 +9,10 @@ development:
     tumblr_consumer_key: 7YM2R3NHACiKLiXWsVvLEa60m5AqT9WxnOVcBTYdMYywkPplC7
     tumblr_consumer_secret: zq7DcmFGhQvjOAHYNWkKeJwwEgeb894eS9ykBxyPU8u2SIYLuE
     
+    facebook_client_id: '129341863803686'
+    facebook_client_secret: f3d35ab215d07ae64c2a8176b2e5bdd5
+    facebook_callback_uri: http://localhost:3000/facebook/callback
+    
 test:
     instagram_client_id: a4806b531031499dbdfa29883c44546e
     instagram_client_secret: fac505457d2e4d9d8341c6f5bc653503
@@ -19,6 +23,10 @@ test:
     
     tumblr_consumer_key: 7YM2R3NHACiKLiXWsVvLEa60m5AqT9WxnOVcBTYdMYywkPplC7
     tumblr_consumer_secret: zq7DcmFGhQvjOAHYNWkKeJwwEgeb894eS9ykBxyPU8u2SIYLuE
+    
+    facebook_client_id: '129341863803686'
+    facebook_client_secret: f3d35ab215d07ae64c2a8176b2e5bdd5
+    facebook_callback_uri: http://localhost:3000/facebook/callback
 
 production:
     instagram_client_id: 1ced2a0708aa48b1ba01c882e4f627aa
@@ -30,4 +38,8 @@ production:
     
     tumblr_consumer_key: RqzEQ6OKxWEQcRjeC9KxWJ6HjQTI1WxoayHyOJ2JxWiXy4yXhQ
     tumblr_consumer_secret: tiEgII1RYiWgLsCU9TJdcTw8oKcd42iWhcdaUXgCIrRZ8pZAMG
+    
+    facebook_client_id: '196561587039687'
+    facebook_client_secret: f513901cc34c550f25e95f1b6858a5a9
+    facebook_callback_uri: http://regr.am/facebook/callback
 

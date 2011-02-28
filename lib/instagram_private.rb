@@ -3,7 +3,8 @@ require 'httparty'
 
 class HTTParty::Response
   def fail!
-    raise self['message'] if self['status'] == 'fail'
+    value
+    raise self['message'] if self['status'] == 'fail' 
   end
 end
 
