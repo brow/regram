@@ -12,7 +12,8 @@ class Instagram
     "https://api.instagram.com/oauth/authorize/" +
        "?client_id=#{CLIENT_ID}" +
        "&redirect_uri=#{CALLBACK_URI}" +
-       "&response_type=code"
+       "&response_type=code" +
+       "&display=touch"
   end
 
   def self.get_user_and_access_token(code)
