@@ -23,6 +23,7 @@ class Facebook
       :redirect_uri => CALLBACK_URI,
       :code => code
     })
+    response.value
     return response.body.match('access_token=(.*)')[1]
   end
 end

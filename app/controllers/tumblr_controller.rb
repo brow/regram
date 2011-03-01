@@ -40,12 +40,12 @@ class TumblrController < ApplicationController
         @user.tumblr_blog_name = @user.tumblr_blog_names[0]
         @user.save
       rescue OAuth::Error => e
-        # populate error flash?
+        #TODO: flash error message
       end
-      redirect_to :controller => 'settings'
     else
-      render :text => "No request token"
+      #TODO: flash error message
     end
+    redirect_to :controller => 'settings'
   end
   
 end
