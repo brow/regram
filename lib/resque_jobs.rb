@@ -4,11 +4,8 @@ require 'redis'
 require 'facebook'
 
 USERNAME = 'regram'
-PASSWORD = 'cra4zycr4zy'
+PASSWORD = 'cr4zycr4zy'
 UDID = '169ac49621beca9eb1593c0babdd123267b30319'
-COOKIES = [ "sessionid=972b30d80389397a46386e011e51e33e", 
-            "ds_user=regram", 
-            "ds_user_id=1248004"]
 
 class Job
   @@log = Logger.new("#{::Rails.root.to_s}/log/instagram.log")
@@ -20,18 +17,19 @@ class Job
 end
 
 class ReadCommentsJob < Job
-  @@api = InstagramPrivate.new(USERNAME, PASSWORD, UDID, COOKIES)
   @queue = :high
   
   LAST_CREATED_AT_KEY = 'regram:last_created_at'
   LAST_USER_IDS_KEY = 'regram:last_user_ids'
   
-  def self.perform
-    response = @@api.activity
+  def self.perform      
+    redis = Redis.new
+    
+    # Request comment activity from Instagram's private API
+    cookies = JSON.parse(redis.get('regram:instagram_cookies'))    
+    response = InstagramPrivate.new(USERNAME, PASSWORD, UDID, cookies).activity
     response.fail!
     return unless items = response['items']
-        
-    redis = Redis.new
     
     # Filter out comments we've already seen
     if items.empty?
@@ -161,6 +159,24 @@ class ScheduleMinuteJob
     # around the one-minute frequency limit of cron and resque_scheduler
     (10..60).step(10) do |n|
       Resque.enqueue_in(n.seconds, ReadCommentsJob)
+    end
+  end
+end
+
+class UpdateCookiesJob < Job
+  @queue = :medium
+  
+  def self.perform
+    redis = Redis.new
+    
+    @@api = InstagramPrivate.new(USERNAME, PASSWORD, UDID)
+    @@api.login.fail!
+    
+    if (@@api.cookies)
+      redis.set('regram:instagram_cookies', @@api.cookies.to_json)
+      @@log.info("got cookies with #{@@api.cookies[0]}")
+    else
+      raise 'No cookies retrieved.'
     end
   end
 end

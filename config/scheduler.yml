@@ -1,3 +1,7 @@
 schedule_minute:
   cron: "* * * * *"
   class: ScheduleMinuteJob
+
+update_cookies:
+  cron: "0 0 * * *"
+  class: UpdateCookiesJob
