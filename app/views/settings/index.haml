@@ -14,20 +14,18 @@
       
     %ul(data-role="listview" data-split-icon="delete" data-split-theme="g" data-inset="true")
       %li
-        %img(src="/images/tumblr.png" class="ui-li-icon")
-        - if @user.tumblr?
-          %a{ :href => url_for(:controller => 'tumblr'),
-              'data-rel' => 'dialog',
-              'data-transition' => 'pop' } 
-            = @user.tumblr_blog_name + '.tumblr.com'
-          %a{ :href => url_for(:controller => 'tumblr', :action => 'logout'), 
+        %img(src="/images/facebook.png" class="ui-li-icon")
+        - if @user.facebook?
+          %a(href="#") 
+            %strong= @user.facebook_name
+          %a{ :href => url_for(:controller => 'facebook', :action => 'logout'), 
               :title => 'remove',
-              'data-transition' => 'fade' }
+              'data-transition' => 'fade'}
         - else
           %a{ :rel => 'external', 
-              :href => url_for(:controller => 'tumblr', :action => 'authorize'),
+              :href => url_for(:controller => 'facebook', :action => 'authorize'),
               :class => 'add' } 
-            Add Tumblr
+            Add Facebook
       %li
         %img(src="/images/twitter.png" class="ui-li-icon")
         - if @user.twitter?
@@ -42,18 +40,20 @@
               :class => 'add' } 
             Add Twitter
       %li
-        %img(src="/images/facebook.png" class="ui-li-icon")
-        - if @user.facebook?
-          %a(href="#") 
-            %strong= @user.facebook_name
-          %a{ :href => url_for(:controller => 'facebook', :action => 'logout'), 
+        %img(src="/images/tumblr.png" class="ui-li-icon")
+        - if @user.tumblr?
+          %a{ :href => url_for(:controller => 'tumblr'),
+              'data-rel' => 'dialog',
+              'data-transition' => 'pop' } 
+            = @user.tumblr_blog_name + '.tumblr.com'
+          %a{ :href => url_for(:controller => 'tumblr', :action => 'logout'), 
               :title => 'remove',
-              'data-transition' => 'fade'}
+              'data-transition' => 'fade' }
         - else
           %a{ :rel => 'external', 
-              :href => url_for(:controller => 'facebook', :action => 'authorize'),
+              :href => url_for(:controller => 'tumblr', :action => 'authorize'),
               :class => 'add' } 
-            Add Facebook
+            Add Tumblr
            
     %a{ :href => url_for(:controller => 'login'), 
         'data-role' => 'button', 

@@ -12,7 +12,8 @@ class Facebook
     "https://www.facebook.com/dialog/oauth" +
        "?client_id=#{CLIENT_ID}" +
        "&redirect_uri=#{CALLBACK_URI}" +
-       "&scope=publish_stream,offline_access"
+       "&scope=publish_stream,offline_access" +
+       "&display=touch"
   end
 
   def self.get_access_token(code)
