@@ -8,11 +8,11 @@
   %div(data-role="content")
     %form{:id => 'tumblr_form', :action => url_for(:action => 'update'), :method => 'POST'}
       %fieldset(data-role="controlgroup")
-        - @user.tumblr_blog_names.each_with_index do |blog_name, index|
+        - @user.tumblr_blogs.each_with_index do |blog, index|
           %input{ :type =>"radio", 
                   :name => "user[tumblr_blog_name]",
                   :id => "blog-name-#{index}",
-                  :value => blog_name,
-                  :checked => blog_name == @user.tumblr_blog_name }
+                  :value => blog[:name],
+                  :checked => blog[:name] == @user.tumblr_blog_name }
           %label{ :for => "blog-name-#{index}"}
-            = blog_name
+            = blog[:title]

@@ -11,7 +11,12 @@ class TumblrController < ApplicationController
   end
   
   def update
-    @user.update_attributes(params['user'])
+    tumblr_blog = @user.tumblr_blogs.find do |blog|
+      blog[:name] == params['user']['tumblr_blog_name']
+    end
+    @user.tumblr_blog_name = tumblr_blog[:name]
+    @user.tumblr_blog_title = tumblr_blog[:title]
+    @user.save
     redirect_to :controller => 'settings'
   end
   
@@ -25,6 +30,7 @@ class TumblrController < ApplicationController
     @user.tumblr_access_token = nil
     @user.tumblr_access_token_secret = nil
     @user.tumblr_blog_name = nil
+    @user.tumblr_blog_title = nil
     @user.save
     redirect_to :controller => 'settings'
   end
@@ -37,7 +43,11 @@ class TumblrController < ApplicationController
         access_token = request_token.get_access_token(:oauth_verifier => verifier)
         @user.tumblr_access_token = access_token.token
         @user.tumblr_access_token_secret = access_token.secret
-        @user.tumblr_blog_name = @user.tumblr_blog_names[0]
+        
+        tumblr_blog = @user.tumblr_blogs[0]
+        @user.tumblr_blog_name = tumblr_blog[:name]
+        @user.tumblr_blog_title = tumblr_blog[:title]
+        
         @user.save
       rescue OAuth::Error => e
         #TODO: flash error message
