@@ -103,9 +103,9 @@ class WriteTumblrJob < Job
       :caption => text,
       'click-through-url' => media_link,
       :generator => 'regram',
-      :group => user.tumblr_blog_name + '.tumblr.com'
+      :group => user.tumblr_blog_name
     }).value
-    @@log.info("posted to #{user.tumblr_blog_name}.tumblr.com")
+    @@log.info("posted to #{user.tumblr_blog_name}")
   end
 end
 

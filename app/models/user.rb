@@ -15,13 +15,15 @@ class User < ActiveRecord::Base
                           tumblr_access_token_secret)
   end
   
-  def tumblr_blog_names
-    unless @tumblr_blog_names
+  def tumblr_blogs
+    unless @tumblr_blogs
       xml = tumblr.get('/api/authenticate').body
       blogs = Hpricot(xml)/"tumblelog"
-      @tumblr_blog_names = blogs.map{|blog| blog['name']}.select{|name| name}
+      @tumblr_blogs = blogs.map do |blog|
+        {:title => blog['title'], :name => blog['private-id'] || (blog['name'] + '.tumblr.com')}
+      end      
     end
-    @tumblr_blog_names
+    @tumblr_blogs
   end
   
   # Twitter

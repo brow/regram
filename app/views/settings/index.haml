@@ -45,7 +45,7 @@
           %a{ :href => url_for(:controller => 'tumblr'),
               'data-rel' => 'dialog',
               'data-transition' => 'pop' } 
-            = @user.tumblr_blog_name + '.tumblr.com'
+            = @user.tumblr_blog_title || "#{@user.tumblr_blog_name}"
           %a{ :href => url_for(:controller => 'tumblr', :action => 'logout'), 
               :title => 'remove',
               'data-transition' => 'fade' }
