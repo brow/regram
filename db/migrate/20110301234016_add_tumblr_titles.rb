@@ -1,6 +1,6 @@
 class AddTumblrTitles < ActiveRecord::Migration
   def self.up
-    # add_column :users, :tumblr_blog_title, :string
+    add_column :users, :tumblr_blog_title, :string
         
     for user in User.find(:all).select{|user| user.tumblr?}
       puts "Updating tumblr #{user.tumblr_blog_name}"
