@@ -22,5 +22,11 @@ p.center {
   font-size: 12px;
   padding: 2px; }
 
+.ui-controlgroup-vertical .ui-btn-inner {
+  white-space: normal; }
+
+.ui-li-has-alt .ui-btn-inner {
+  padding-right: 50px; }
+
 a.add {
   font-weight: normal; }
