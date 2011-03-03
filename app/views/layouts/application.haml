@@ -13,12 +13,12 @@
     
     :javascript
       $('#tumblr_page').live('pagecreate',function(event){
-        $('#tumblr_submit').tap(function(){
+        $('#tumblr_submit').click(function(event){
           $.mobile.changePage({
-            url: $("#tumblr_form").attr('action'),
-            type: 'post',
-            data: $("#tumblr_form").serialize()
-          }, "pop", true);
+            url: $('#tumblr_form').attr('action'),
+            data: $('#tumblr_form').serialize(),
+            type: 'post'
+          }, "pop", true, false);
         });
       });
     
