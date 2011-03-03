@@ -11,12 +11,14 @@ class TumblrController < ApplicationController
   end
   
   def update
-    tumblr_blog = @user.tumblr_blogs.find do |blog|
-      blog[:name] == params['user']['tumblr_blog_name']
+    if params['user']
+      tumblr_blog = @user.tumblr_blogs.find do |blog|
+        blog[:name] == params['user']['tumblr_blog_name']
+      end
+      @user.tumblr_blog_name = tumblr_blog[:name]
+      @user.tumblr_blog_title = tumblr_blog[:title]
+      @user.save
     end
-    @user.tumblr_blog_name = tumblr_blog[:name]
-    @user.tumblr_blog_title = tumblr_blog[:title]
-    @user.save
     redirect_to :controller => 'settings'
   end
   

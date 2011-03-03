@@ -14,7 +14,11 @@
     :javascript
       $('#tumblr_page').live('pagecreate',function(event){
         $('#tumblr_submit').tap(function(){
-          $('#tumblr_form').submit();
+          $.mobile.changePage({
+            url: $("#tumblr_form").attr('action'),
+            type: 'post',
+            data: $("#tumblr_form").serialize()
+          }, "pop", true);
         });
       });
     
