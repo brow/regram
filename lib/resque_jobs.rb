@@ -26,7 +26,7 @@ class ReadCommentsJob < Job
     redis = Redis.new
     
     # Request comment activity from Instagram's private API
-    cookies = JSON.parse(redis.get('regram:instagram_cookies'))    
+    cookies = JSON.parse(redis.get('regram:instagram_cookies') || '[]')    
     response = InstagramPrivate.new(USERNAME, PASSWORD, UDID, cookies).activity
     response.fail!
     return unless items = response['items']
